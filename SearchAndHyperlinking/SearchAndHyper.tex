@@ -1,6 +1,9 @@
 
 \documentclass{acm_proc_article-me}
 
+\usepackage[none]{hyphenat}
+\sloppy
+
 \begin{document}
 \conferenceinfo{\textit{MediaEval 2014 Workshop,}}{October 16-17, 2014, Barcelona, Spain}
 
@@ -25,50 +28,50 @@ G\'abor Sz\H ucs \\
 
 \maketitle
 \begin{abstract}
-Abstract
+The aim of the paper was to support the answer to a query with a ranked list of video segments (search task) and to generate possible hyperlinks (in ranked order) to other video segments in the same collection that provide information about the found segments (linking task). Our solution is based on concept enrichment i.e. the set of words is extended with their synonyms or other conceptually connected words. The other contribution is the content mixing using the combination of all transcripts and manual subtitles of the videos.
 \end{abstract}
 
 \section{Introduction}
-Our paper is about a user who searches for different segments of videos within a video collection that address certain topic of interest expressed in a query. If the user finds the segments that are relevant to his initial information need, he may wish to find additional information about these segments \cite{eskevich2014search}. So our aims were to support the answer to a query with a ranked list of documents (search task) and to generate a ranked list of video segments in the same collection that provide information about the found segments (linking task). Both sub-tasks represent ad-hoc retrieval scenario, and were evaluated by organizer of the challenge. 
+Our paper is about a user who searches for different segments of videos within a video collection that address certain topic of interest expressed in a query. If the user finds the segments that are relevant to his initial information need, he may wish to find additional information connected to these segments \cite{eskevich2014search}. Our aims were to support the answer to a query with a ranked list of documents (search task) and to generate a ranked list of video segments in the same collection that provide information about the found segments (linking task). Both sub-tasks represent ad-hoc retrieval scenario, and were evaluated by organizer of the challenge. 
 
-We used the same collection of the BBC videos as a source for the test set collection. Collection of BBC consists of video keyframes, audio content, 3 sets of automatic transcripts (ASR - automatic speech recognition): LIMSI/Vocapia \cite{gauvain2002limsi,lamel2012multilingual,lamel2008speech}, LIUM \cite{8307}, NST/Sheffield \cite{lanchantin2013automatic,hain2008automatic} furthermore 1 manual subtitles, metadata and prosodic features \cite{eyben2013recent}.
+We used the same collection of the BBC videos as a source for the test set collection. Collection of BBC consists of video keyframes, audio content, 3 sets of automatic transcripts (ASR - automatic speech recognition): LIMSI/Vocapia \cite{gauvain2002limsi,lamel2012multilingual,lamel2008speech}, LIUM , NST/Sheffield \cite{lanchantin2013automatic,hain2008automatic} furthermore 1 manual subtitles, metadata and prosodic features \cite{eyben2013recent}.
 
 
 \section{System Overview}
 
-During the task we developed a small system for processing the data. Our solution is solely based on textual analysis, we only used the subtitles and transcripts. It has 5 distinctive stages: data normalization (i), shot cutting (ii), concept enrichment (iii), content mixing (iv), indexing and retrieval (v).
+During the tasks we developed a small system for processing the data. Our solution is solely based on textual analysis, we only used the subtitles and transcripts. It has 5 distinctive stages: data normalization (i), shot cutting (ii), concept enrichment (iii), content mixing (iv), indexing and retrieval (v).
 
 
 \subsection{Normalization}
-The data set was given in various forms, so the first step of our system was to normalize the data formats and to convert all data to the same scale. We used the time dimension as scale and csv as the common data format.
+The data set was given in various forms, so the first step was to normalize the data formats and to convert all data to the same scale. We used the time dimension as scale and csv as the common data format.
 
 \subsection{Shot cutting}
 
 Since in the data set each file represented a whole television program and we wanted to work on 'shot' level we created a tool, that cut each input data into shots. Using this method we created more than 300000 small files, each representing one shot with only one metric (like LIMSI transcript).
 
-Our main goal was to create a concept enrichmented so called 'shot-document' file for each shot with each metric, that way even if the user is using some synonym will find the content. For example if the search query is "dog" and there is a shot-document which has the word 'puppy' in it, the aim is to connect them and return the needed result.
+Our main goal was to create a concept enrichmented so called 'shot-document' file for each shot with each metric, by doing this the content can be found using synonyms in the search query. For example if the search query is "dog" and there is a shot-document which has the word 'puppy' in it, the aim is to connect them and return the needed result.
 
 \subsection{Concept enrichment}
 
 Our concept enrichment stage consists of three text transformation stage. First each word in the shot-documents is analysed by the phpMorphy~\footnote{Source: http://sourceforge.net/projects/phpmorphy} morphology engine. This engine can create the normal form (stem) of each word using basic grammatical rules and a large dictionary. This engine also works in the German and Russian language besides English. In our work we replaced every word with its normal form. In this point the shot-document is only a bag of words.
 
-After this step we filtered out the stop words, we used 702 different English stop words for that, including search term like words like: less, important.
+After this step we filtered out the stop words, we used 702 different English stop words for that, including search term like words e.g.: less, important.
 
 This way we narrowed down the word list of a shot-document to its core concept. But for a better match we needed to enrich this list with synonyms and conceptually connected other items. For this we used the well known ConceptNet 5~\footnote{Source: http://conceptnet5.media.mit.edu/} system, which can give us other words / phrases connected to each word in a shot-document. We experimented with a wider range solution: including 50 conceptually connected words for each word in the shot document and a smaller range solution: including only 10 connected word. In the results the (C2) notates the smaller range result. We introduced a weight for each word, the "original" words inside the shot-document's weight is 1, the weight of connected words are lower (for wide range: 0.2, for small range:0.1). At aggregation all of the enriched words there can be duplicates (like 'home' is connected to 'school' and 'teacher' connected to 'school'), we aggregate them by a simple weight sum. Using this method the weight represents the importantness of a word in the conceptual graph (sum of all words in the shot-document).
 
 \subsection{Content mixing}
 
-We created multiple shot-document types (3 transcripts and manual subtitles), Furthermore a combined type, so called "All transcript and subtitle". This later case was created by taking each shot-document with word weights and put together by the same sum method explained before. This way we could represent each and every possible word in our concept file, but on the other side we added a lot of conceptual noice to the originally clean document.
+We created multiple shot-document types (3 transcripts and manual subtitles), furthermore a combined type, so called "All transcript and subtitle". This later case was created by taking each shot-document with word weights and put together by the same sum method explained before. This way we could represent each and every possible word in our concept file, but on the other side we added a lot of conceptual noise to the originally clean document.
 
 \subsection{Indexing and retrieval}
 
-For indexing each shot-document we used Apache Solr~\footnote{http://lucene.apache.org/solr/} since it supports text indexing and retrieval with a lot of adjustable values. Each shot-document is considered in Solr as a single continuous text stream, the order of the words represented the weight in the shot-document. Important note is that during the word reordering we kept concept phrases as one entity.
+For indexing each shot-document we used Apache Solr~\footnote{http://lucene.apache.org/solr/} since it supports text indexing and retrieval with a lot of adjustable variables. Each shot-document is considered in Solr as a single continuous text stream, the order of the words represented the weight in the shot-document. Important note is that during the word reordering we kept concept phrases as one entity.
 
 In the search subtask the retrieval only included the following steps: stop word filtering for the query, creating the norm form for each word in the query, using the query as a search in Solr. The result was limited to 30 items.
 
 In the linking subtask we used the shot-document representing the needed section as a search query, but we removed the concept enriched words from it. So it was basically the core concept of the shot used as a simple text search.
 
-\section{Results}
+\section{Results and conclusions}
 
 The whole dataset was more than 3700 hours of video and the evaluation was on a shot level base (sometimes less than 5 seconds).
 
@@ -140,14 +143,12 @@ The biggest surprise is the failure of our context mixing method since it underp
 \caption{P@N result for the linking subtask}
 \end{table}
 
-In the linking subtask the Manual subtitles gave us the best result, but it's interesting to note that for 2 of the anchors we cannot fight any relevant items among all of our results, that is why the P@N results are so low. These anchors are \textit{anchor\_22} and \textit{anchor\_27}.
-
-\section{Conclusions}
+In the linking subtask the Manual subtitles gave us the best result, but it's interesting to note that for 2 of the anchors we cannot find any relevant items among all of our results, that is why the P@N results are so low. These anchors are \textit{anchor\_22} and \textit{anchor\_27}.
 
 
 \section{Acknowledgments}
 
-The publication was supported by the TÁMOP-4.2.2.C-11/1/KONV-2012-0001 project. The project has been supported by the European Union, co-financed by the European Social Fund.
+The publication was supported by the T\'AMOP-4.2.2.C-11/1/KONV-2012-0001 project. The project has been supported by the European Union, co-financed by the European Social Fund.
 
 \bibliographystyle{abbrv}
 \bibliography{sigproc}
