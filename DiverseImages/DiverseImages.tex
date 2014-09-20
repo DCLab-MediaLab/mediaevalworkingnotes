@@ -7,7 +7,7 @@
 \begin{document}
 \conferenceinfo{\textit{MediaEval 2014 Workshop,}}{October 16-17, 2014, Barcelona, Spain}
 
-\title{DCLab at MediaEval2014 Retrieving Diverse Social Images Task}
+\title{DCLab at MediaEval2014 Retrieving Diverse \\ Social Images Task}
 
 \numberofauthors{3}
 
@@ -19,7 +19,7 @@ Zsombor Par\'oczi\\
 \alignauthor
 B\'alint Fodor\\
        \affaddr{Inter-University Centre for Telecommunications and Informatics}\\
-       \email{fodor@aut.bme.hu}
+       \email{balint.fodor@aut.bme.hu}
 \alignauthor
 G\'abor Sz\H ucs \\
        \affaddr{Inter-University Centre for Telecommunications and Informatics}\\
@@ -32,21 +32,29 @@ TODO abstract
 \end{abstract}
 
 \section{Introduction}
+
 Many potential tourists search on Web tries to find more information about a place he (or she) is potentially visiting. These persons have only a vague idea about the location, knowing the name of the place. Our aim is to help with these persons by providing a set of photos, as summary of the different views of the location. 
 In the official challenge (Retrieving Diverse Social Images at MediaEval 2014: Challenge, Dataset and Evaluation) \cite{ionescu2014retrieving} a ranked list of location photos retrieved from Flickr (using text information) is given, and the task is , to refine the results by providing a set of images that are in the same time relevant and provide a diversified summary. The diversity means that images can illustrate different views of the location at different times of the day/year and under different weather conditions, creative views, etc. The refinement and diversification process can be based on the social metadata associated with the collected photos in the data set \cite{ionescu2014div400} and/or on the visual characteristics of the images. The initial results are typically noisy and redundant because of social media platform \cite{radu2014hybrid}, where the large variety comes from very different users. 
 The goodness of the refinement process can be measured by precision and diversity \cite{Taneva:2010:GRP:1718487.1718541}. Earlier we have solved a very similar problem by diversification of initial results using clustering \cite{szHucs2013bmemtm}, but our solution was focused on only diversification. The largest development of this paper is that both of relevance and diversity are in the centre.
 
 \section{Reordering System}
 
-We took five approaches to generate the final reordering of the inital search result. These required five different systems that share similar components. All the systems take the inital ordering as the input along with the visual feature descriptors and the textual descriptors corresponding to the images. In every case the relevancy of each image is estimated, the images are grouped into clusters and based on this two type of information the final ordering is determined.
+We took five approaches to generate the final reordering of the inital search result. This required five different systems that share similar components. All the systems take the inital ordering as the input along with the visual feature descriptors and the textual descriptors corresponding to the images. In every case the relevancy of each image is estimated, the images are grouped into clusters and based on this two type of information the final ordering is determined.
 
 \subsection{Relevance Scoring}
 
+For every $k$th place in the orderings of the developer data set we calculated the probability of the item at the $k$th place is beeing relevant. Before giving the formal definition let denote the set of all orderings in the developer set as $L$, the $k$th element of the ordering $l \in L$ as $l_k$ and the binary function of the relevancy (based on the ground truth data) as $r_{gt}(l_k)$. Then $p_k$, the estimated probability of the $k$th element in an ordering is relevant:
+$p_k = \frac{1}{|L|}\sum_{l \in L}r_{gt}(l_k)$.
 
+When processing an ordering (from the test data set) we give the relevance score of $p_k$ to the $k$th element of the ordering.
 
 \subsection{Clustering}
 
-\subsection{Ordering}
+TODO text clustering
+
+The provided data sets contain visual feature descriptors (color moments, histogram of oriented gradients, etc.) in csv files. First, we merged the descriptors into a long feature vector, one vector for an image. The clustering is done on a per ordering basis, so the feature vector is calculated for every image in an ordering. Then the components of the vectors are normalized to bring all the data to the same scale. The vectors are clustered with the K-means algorithm trying all the number of clusters parameter from 6 to 18. For every clustering the silhouette score \cite{rousseeuw1987silhouettes} is calculated and the best instance is selected.
+
+\subsection{Final Ordering}
 
 \section{Results and Conclusion}
 
