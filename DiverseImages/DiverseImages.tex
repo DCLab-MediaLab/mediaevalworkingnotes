@@ -102,7 +102,7 @@ Our reordering algorithm (in order to get maximal $F_1$ value in each subset of 
 
 \section{Results and Conclusion}
 
-Figure \ref{fig:p}. shows the values of P@N and CR@N for the different runs, while table \ref{table:results}. shows the average P@20, CR@20 and F1@20 results. The results of the five approaches mainly differ in P@N performance. The diversity is almost the same, so P@N has more impact on the $F_1$ score.
+Figure \ref{fig:p}. shows the values of F1@N for the different runs, while table \ref{table:results}. shows the average P@20, CR@20 and F1@20 results. The results of the five approaches mainly differ in P@N performance. The cluster recall (CR) is almost the same, so P@N has more impact on the $F_1$ score.
 
 It is interesting that run2 (the approach that uses only textual data for clustering) performs the best in P@20 average and in P@20-50.
 
@@ -134,9 +134,9 @@ However run3 (clustering based on visual+textual data) underperforms run2 in P@2
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\linewidth]{p}
-\includegraphics[width=0.8\linewidth]{cr}
-\caption{P@N and CR@N results}
+%\includegraphics[width=0.8\linewidth]{p}
+\includegraphics[width=0.95\linewidth]{f1}
+\caption{F1@N results}
 \label{fig:p}
 \end{figure}
 
