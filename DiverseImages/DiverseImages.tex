@@ -28,7 +28,17 @@ G\'abor Sz\H ucs \\
 
 \maketitle
 \begin{abstract}
-TODO abstract
+
+The aim of the paper is to develop refinement and diversification process
+based on the social metadata associated with the collected photos in the
+data set and/or on the visual characteristics of the images. The goal of
+the developed reordering algorithm is to find the maximal value of
+harmonic mean of precision and diversity. Our contribution is the
+precision calculation based on statistical average of training data set,
+and mixing of clustering results in order to get better diversity. In the
+combined clustering the new label set is the Cartesian product of the two
+original cluster label sets.
+
 \end{abstract}
 
 \section{Introduction}
@@ -72,9 +82,7 @@ Table \ref{table:runs}. shows the different system compositions we used. Section
 For every $k$th place in the orderings of the developer data set we calculated the probability of the item at the $k$th place is relevant. Before giving the formal definition let denote the set of all orderings in the developer set as $L$, the $k$th element of the ordering $l \in L$ as $l_k$ and the binary function of the relevancy (based on the ground truth data) as $r_{gt}(l_k)$. Then $p_k$, the estimated probability of the $k$th element in an ordering is relevant:
 $p_k = \frac{1}{|L|}\sum_{l \in L}r_{gt}(l_k)$.
 
-When processing an ordering (from the test data set) we give the relevance score of $p_k$ to the $k$th element of the ordering.
-
-In table \ref{table:runs}. 'avg + credibility' means that the relevance estimation is multiplied by the user credibility (in range $[0,1]$). 
+When processing an ordering (from the test data set) we give the relevance score of $p_k$ to the $k$th element of the ordering. In table \ref{table:runs}. 'avg + credibility' means that the relevance estimation is multiplied by the user credibility (in range $[0,1]$). 
 
 \subsection{Clustering}
 \label{sec:clust}
@@ -94,9 +102,15 @@ Our reordering algorithm (in order to get maximal $F_1$ value in each subset of 
 
 \section{Results and Conclusion}
 
-Figures \ref{fig:p}., \ref{fig:cr}., \ref{fig:f1}. shows the values of P@N, CR@N and F1@N for the different runs, while table \ref{table:results}. shows the average P@20, CR@20 and F1@20 results.
+Figure \ref{fig:p}. shows the values of P@N and CR@N for the different runs, while table \ref{table:results}. shows the average P@20, CR@20 and F1@20 results.
 
+The results of the five approaches mainly differ in P@N performance. The diversity is almost the same, so P@N has more impact on the $F_1$ score.
 
+It is interesting that run2, the approach that uses only textual data for clustering performs the best in P@20 average and in P@20-50.
+
+The credibility information tends to have negative effect on both P@N and CR@N in our tests.
+
+However run3 (clustering based on visual+textual data) underperforms run2 in P@20 average, it is more diverse, so the overall F1@20 score is the hightest for run3.
 
 \begin{table}[h]
 \centering
@@ -121,22 +135,23 @@ Figures \ref{fig:p}., \ref{fig:cr}., \ref{fig:f1}. shows the values of P@N, CR@N
 \end{table}
 
 \begin{figure}[h]
-\includegraphics[width=0.9\linewidth]{p}
-\caption{P@N results}
+\centering
+\includegraphics[width=0.8\linewidth]{p}
+\includegraphics[width=0.8\linewidth]{cr}
+\caption{P@N and CR@N results}
 \label{fig:p}
 \end{figure}
 
-\begin{figure}[h]
-\includegraphics[width=0.9\linewidth]{cr}
-\caption{CR@N results}
-\label{fig:cr}
-\end{figure}
+%\begin{figure}[h]
+%\caption{CR@N results}
+%\label{fig:cr}
+%\end{figure}
 
-\begin{figure}[h]
-\includegraphics[width=0.9\linewidth]{f1}
-\caption{F1@N results}
-\label{fig:f1}
-\end{figure}
+%\begin{figure}[h]
+%\includegraphics[width=0.9\linewidth]{f1}
+%\caption{F1@N results}
+%\label{fig:f1}
+%\end{figure}
 
 \section{Acknowledgments}
 
