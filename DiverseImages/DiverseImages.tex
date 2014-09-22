@@ -41,6 +41,26 @@ The goodness of the refinement process can be measured by precision and diversit
 
 We took five approaches to generate the final reordering of the inital search result. This required five different systems that share similar components. All the systems take the inital ordering as the input along with the visual feature descriptors and the textual descriptors corresponding to the images. In every case the relevancy of each image is estimated, the images are grouped into clusters and based on this two type of information the final ordering is determined.
 
+\begin{table}[h]
+\begin{tabular}{|c|c|c|}
+	\hline 
+	run name & relevance & clustering\tabularnewline
+	\hline 
+	\hline 
+	run1 & devset avg & visual descriptors\tabularnewline
+	\hline 
+	run2 & devset avg & textual descriptors\tabularnewline
+	\hline 
+	run3 & devset avg & visual+textual descriptors\tabularnewline
+	\hline 
+	run4 & devset avg scaled with user credibility & visual+textual descriptors\tabularnewline
+	\hline 
+	run5 & combined devset avg and credibility information & visual+textual descriptors\tabularnewline
+	\hline 
+\end{tabular}
+\caption{TODO caption}
+\end{table}
+
 \subsection{Relevance Scoring}
 
 For every $k$th place in the orderings of the developer data set we calculated the probability of the item at the $k$th place is beeing relevant. Before giving the formal definition let denote the set of all orderings in the developer set as $L$, the $k$th element of the ordering $l \in L$ as $l_k$ and the binary function of the relevancy (based on the ground truth data) as $r_{gt}(l_k)$. Then $p_k$, the estimated probability of the $k$th element in an ordering is relevant:
@@ -54,39 +74,33 @@ TODO text clustering
 
 The provided data sets contain visual feature descriptors (color moments, histogram of oriented gradients, etc.) in csv files. First, we merged the descriptors into a long feature vector, one vector for an image. The clustering is done on a per ordering basis, so the feature vector is calculated for every image in an ordering. Then the components of the vectors are normalized to bring all the data to the same scale. The vectors are clustered with the K-means algorithm trying all the number of clusters parameter from 6 to 18. For every clustering the silhouette score \cite{rousseeuw1987silhouettes} is calculated and the best instance is selected.
 
+Clusterings based on the textual and the visual data can differ, but merging the two results can be beneficial. Having two clustering functions $c_1(x)$ and $c_2(x)$ that are mapping an image id to a cluster label, one can construct $c_3(x) = (c_1(x), c_2(x))$ that maps an image id to a new cluster labeled by the pair of the two original cluster labels. Note that the new label set is the Cartesian product of the two original cluster label sets.
+
 \subsection{Final Ordering}
+
+TODO
 
 \section{Results and Conclusion}
 
-% \begin{table}[h]
-% \begin{tabular}{|c|c|c|c|}
-% 	\hline 
-% 	& P@5 & P@10 & P@20\tabularnewline
-% 	\hline 
-% 	\hline 
-% 	Manual subtitles & .1778 & .2000 & .1407\tabularnewline
-% 	\hline 
-% 	LIMSI transcripts & .1481 & .1667 & .1185\tabularnewline
-% 	\hline 
-% 	LIUM transcripts & .1630 & .1444 & .1148\tabularnewline
-% 	\hline 
-% 	NST/Sheffield & .1769 & .1308 & .0981\tabularnewline
-% 	\hline 
-% 	All transc. and sub. & .1517 & .1345 & .1017\tabularnewline
-% 	\hline 
-% 	Manual subtitles (C2) & .3407 & .3074 & .2074\tabularnewline
-% 	\hline 
-% 	LIMSI transcripts (C2) & .3111 & .2926 & .2204\tabularnewline
-% 	\hline 
-% 	LIUM transcripts (C2) & .3704 & .2815 & .2204\tabularnewline
-% 	\hline 
-% 	NST/Sheffield (C2) & .2846 & .2231 & .1692\tabularnewline	
-% 	\hline 
-% 	All transc. and sub. (C2) & .1655 & .1586 & .1190\tabularnewline	
-% 	\hline 
-% \end{tabular}
-% \caption{P@N result for the searching subtask}
-% \end{table}
+\begin{table}[h]
+\begin{tabular}{|l|r|r|r|}
+	\hline 
+	run name & P@20 & CR@20 & F1@20\tabularnewline
+	\hline 
+	\hline 
+	VisClusterAvgRelevance & .7602 & .4107 & .5259\tabularnewline
+	\hline 
+	TextClusterAvgRelevance & .7809 & .4065 & .527\tabularnewline
+	\hline 
+	VisTextClusterAvgRelevance & .7756 & .4127 & .5305\tabularnewline
+	\hline 
+	VisTextClusterCredRelevance & .7415 & .3651 & .4819\tabularnewline
+	\hline 
+	VisTextClusterMixedRelevance & .7431 & .3682 & .4866\tabularnewline
+	\hline 
+\end{tabular}
+\caption{Average results of the five approaches}
+\end{table}
 
 % \subsection{Linking subtask}
 
