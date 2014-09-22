@@ -87,16 +87,14 @@ Clusterings based on textual and visual data can differ, but merging the two res
 
 Our reordering algorithm (in order to get maximal F1 value in each subset of the answer list) consists of four phases.
 
-\begin{itemize}
-\item Take the elements in each cluster in descending order and select the element that possessing the largest probabilities of relevance, this will be the 1st in the reordered list.
-\item $L$th step: take the first elements in each cluster as candidate and calculate the estimated F1 measure: $$F_1@L = 2 \cdot $$
-
-
-Select the element possessing the largest estimated F1 measure and move to the reordered list.
-Continue with phase 2.
-\end{itemize}
+1) Take the elements in each cluster in descending order and select the element that possessing the largest probabilities of relevance, this will be the 1st in the reordered list.
+2) $L$th step: take the first elements in each cluster as candidate and calculate the estimated F1 measure: $$F_1(@L) = \frac{2 \cdot P(@L) \cdot CR(@L)}{P(@L) + CR(@L)}$$
+3) Select the element possessing the largest estimated F1 measure and move to the reordered list.
+4) Continue with phase 2 until we have cluster elements left.
 
 \section{Results and Conclusion}
+
+Table \ref{table:results}. shows the average P@20, CR@20 and F1@20 results.
 
 \begin{table}[h]
 \begin{tabular}{|l|r|r|r|}
@@ -116,48 +114,26 @@ Continue with phase 2.
 	\hline 
 \end{tabular}
 \caption{Average results of the five approaches}
+\label{table:results}
 \end{table}
 
+\begin{figure}[h]
 \includegraphics[width=0.9\linewidth]{p}
+\caption{P@N results}
+\label{fig:p}
+\end{figure}
 
-
+\begin{figure}[h]
 \includegraphics[width=0.9\linewidth]{cr}
+\caption{CR@N results}
+\label{fig:cr}
+\end{figure}
 
-
+\begin{figure}[h]
 \includegraphics[width=0.9\linewidth]{f1}
-
-
-% \subsection{Linking subtask}
-
-% \begin{table}[h]
-% \begin{tabular}{|c|c|c|c|}
-% 	\hline 
-% 	& P@5 & P@10 & P@20\tabularnewline
-% 	\hline 
-% 	\hline 
-% 	Manual subtitles & .0750 & .0500 & .0312\tabularnewline
-% 	\hline 
-% 	LIMSI transcripts & .0444 & .0333 & .0167\tabularnewline
-% 	\hline 
-% 	LIUM transcripts & .0533 & .0400 & .0200\tabularnewline
-% 	\hline 
-% 	NST/Sheffield & .0400 & .0467 & .0233\tabularnewline
-% 	\hline 
-% 	All transc. and sub. & .0370 & .0407 & .0222\tabularnewline
-% 	\hline 
-% 	Manual subtitles (C2) & .1818 & .1000 & .0500\tabularnewline
-% 	\hline 
-% 	LIMSI transcripts (C2) & .0500 & .0625 & .0375\tabularnewline
-% 	\hline 
-% 	LIUM transcripts (C2) & .0526 & .0316 & .0184\tabularnewline
-% 	\hline 
-% 	NST/Sheffield (C2) & .0300 & .0350 & .0175\tabularnewline	
-% 	\hline 
-% 	All transc. and sub. (C2) & .0143 & .0250 & .0196\tabularnewline	
-% 	\hline 
-% \end{tabular}
-% \caption{P@N result for the linking subtask}
-% \end{table}
+\caption{F1@N results}
+\label{fig:f1}
+\end{figure}
 
 \section{Acknowledgments}
 
