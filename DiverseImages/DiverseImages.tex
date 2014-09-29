@@ -38,7 +38,7 @@ value of the harmonic mean of precision and diversity. Our contribution is twofo
 \section{Introduction}
 
 Many potential tourists do websearches when they try to find more information about a place they are potentially visiting. These people have only a vague idea about the location, knowing the name of the place. Our aim is to help them by providing a set of photos, as summary of the different views of the location. 
-In the official challenge of the MediaEval 2014 Retrieving Diverse Social Images task \cite{ionescu2014retrieving} a ranked list of location photos retrieved from Flickr (using text information) is given, and the task is, to refine the results by providing a set of images that are both relevant and provide a diversified summary. The diversity means that images can illustrate different views of the location at different times of the day/year and under different weather conditions, creative views, etc. The refinement and diversification process can be based on the social metadata associated with the collected photos in the data set~\cite{ionescu2014div400} and/or on the visual characteristics of the images. The initial results are typically noisy and redundant because of the imperfect metadat and the current, restricted search capabilities of the social media platforms~\cite{radu2014hybrid}, where the large variety comes from very different users. 
+In the official challenge of the MediaEval 2014 Retrieving Diverse Social Images task \cite{ionescu2014retrieving} a ranked list of location photos retrieved from Flickr (using text information) is given, and the task is, to refine the results by providing a set of images that are both relevant and provide a diversified summary. The diversity means that images can illustrate different views of the location at different times of the day/year and under different weather conditions, creative views, etc. The refinement and diversification process can be based on the social metadata associated with the collected photos in the data set~\cite{ionescu2014div400} and/or on the visual characteristics of the images. The initial results are typically noisy and redundant because of the imperfect metadata and the current, restricted search capabilities of the social media platforms~\cite{radu2014hybrid}, where the large variety comes from very different users. 
 
 The goodness of the refinement process can be measured using the precision and diversity metric.
 %~\cite{Taneva:2010:GRP:1718487.1718541}
@@ -58,12 +58,12 @@ We took five approaches to generate the final re-ranking of the inital search re
 
 All the systems take the inital ranks as input along with the visual feature descriptors and the textual descriptors corresponding to the images. In each case the relevance of all images are estimated, the images are grouped into clusters and based on this two type of information the final ranks are determined.
 
-Section \ref{sec:relevance}. describes the 'average' relevance estimation and its extended versions utilizing user tagging credibility information. Tagging credibilities are used with different weights in the last two approaches. Section \ref{sec:clust}. defines the methods we used to cluster the data.
+Section \ref{sec:relevance}. describes the 'average' relevance estimation and its extended versions using user tagging credibility information. Tagging credibilities are used with different weights in the last two approaches. Section \ref{sec:clust}. defines the methods we used to cluster the data.
 
 \subsection{Relevance Scoring and Estimation}
 \label{sec:relevance}
 
-For every $k$th place in the initial sequence of the development data set we calculated the probability of the item at the $k$th place is being relevant. Before giving the formal definition let denote the set of all initial sequences in the development set as $L$, the $k$th element of the sequence $l \in L$ as $l_k$ and the binary function of the relevance (based on the ground truth data) as $r_{gt}(l_k)$. Then $p_k$, the estimated probability of the $k$th element in an ordering is relevant:
+For every $k$th place in the initial sequence of the development data set we compute the probability of the item at the $k$th place of being relevant. Before giving the formal definition let denote the set of all initial sequences in the development set as $L$, the $k$th element of the sequence $l \in L$ as $l_k$ and the binary function of the relevance (based on the ground truth data) as $r_{gt}(l_k)$. Then $p_k$, the estimated probability of the $k$th element in an ordering is relevant:
 $p_k = \frac{1}{|L|}\sum_{l \in L}r_{gt}(l_k)$.
 
 When processing an initial sequence (from the test data set) we give the relevance score of $p_k$ to the $k$th element of the sequence. In Table \ref{table:runs} 'avg + credibility' means that the relevance estimation is multiplied by the user tagging credibility.
@@ -71,7 +71,7 @@ When processing an initial sequence (from the test data set) we give the relevan
 \subsection{Clustering}
 \label{sec:clust}
 
-The provided data sets contain visual feature descriptors (color moments, histogram of oriented gradients, etc.) in csv files. First, we merged the descriptors into a long feature vector, one vector for each image. Then the components of the vectors are normalized to bring all the data to the same scale. The vectors are clustered with the K-means algorithm by trying all clustering number parameters from 6 to 18. For every clustering the silhouette score~\cite{rousseeuw1987silhouettes} is calculated and the best instance is selected.
+The provided data sets contain visual feature descriptors (color moments, histogram of oriented gradients, etc) in csv files. First, we merged the descriptors into a long feature vector, one vector for each image. Then the components of the vectors are normalized to bring all the data to the same scale. The vectors are clustered with the K-means algorithm by trying all clustering number parameters from 6 to 18. For every clustering the silhouette score~\cite{rousseeuw1987silhouettes} is calculated and the best instance is selected.
 
 Clusterings based on textual and visual data can differ, but merging the two results can be beneficial. Having two clustering functions $c_1(x)$ and $c_2(x)$ that are mapping an image ID to a cluster label, one can construct $c_3(x) = (c_1(x), c_2(x))$ that maps an image ID to a new cluster labeled by the pair of the two original cluster labels. Note that the new label set is the Cartesian product of the two original cluster label sets.
 
@@ -109,7 +109,7 @@ Our re-ranking algorithm (in order to get maximal $F_1$ value in each subset of 
 \label{table:runs}
 \end{table}
 
-Table \ref{table:runs} shows the different system co mpositions we used. 'Avg' is for the 'average' relevance estimation detailed in section 2.1.
+Table \ref{table:runs} shows the different system compositions we used. 'Avg' is for the 'average' relevance estimation detailed in Section 2.1.
 Figure \ref{fig:p} shows the values of $F_1$ for the different runs, while Table \ref{table:results} shows the average P@20, CR@20 and F1@20 results. The results of the five approaches mainly differ in P@N performance. The cluster recall (CR) is almost the same, so P@N has more impact on the $F_1$ score.
 
 %It is interesting that run2 (the approach that uses only textual data for clustering) performs the best in P@20 average and in P@20-50.
@@ -128,7 +128,7 @@ However run3 (clustering based on visual+textual data) underperforms run2 in P@2
 
 \begin{table}[t]
 \centering
-\caption{Average results of the five approaches}
+\caption{Results of the proposed runs on testset}
 \begin{tabular}{|l|r|r|r|}
 	\hline 
 	run name & P@20 & CR@20 & F1@20\tabularnewline
