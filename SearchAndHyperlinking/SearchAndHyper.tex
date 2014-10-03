@@ -28,11 +28,11 @@ G\'abor Sz\H ucs \\
 
 \maketitle
 \begin{abstract}
-The aim of the paper was to support the answer to a query with a ranked list of video segments (search task) and to generate possible hyperlinks (in ranked order) to other video segments in the same collection that provide information about the found segments (linking task). Our solution is based on concept enrichment i.e. the set of words is extended with their synonyms or other conceptually connected words. The other contribution is the content mixing using the combination of all transcripts and manual subtitles of the videos.
+The aim of the paper was to support the answer to a query with a ranked list of video segments (search sub-task) and to generate possible hyperlinks (in ranked order) to other video segments in the same collection that provide information about the found segments (linking sub-task). Our solution is based on concept enrichment i.e. the set of words is extended with their synonyms or other conceptually connected words. The other contribution is the content mixing using the combination of all transcripts and manual subtitles of the videos.
 \end{abstract}
 
 \section{Introduction}
-Our paper is about a user who searches for different segments of videos within a video collection that address certain topic of interest expressed in a query. If the user finds the segments that are relevant to his initial information need, he may wish to find additional information connected to these segments \cite{eskevich2014search}. Our aims were to support the answer to a query with a ranked list of documents (search task) and to generate a ranked list of video segments in the same collection that provide information about the found segments (linking task). Both sub-tasks represent ad-hoc retrieval scenario, and were evaluated by organizers.
+Our paper is about a user who searches for different segments of videos within a video collection that address certain topic of interest expressed in a query. If the user finds the segments that are relevant to his initial information need, he may wish to find additional information connected to these segments \cite{eskevich2014search}. Our aims were to support the answer to a query with a ranked list of documents (search sub-task) and to generate a ranked list of video segments in the same collection that provide information about the found segments (linking sub-task). Both sub-tasks represent ad-hoc retrieval scenario, and were evaluated by organizers.
 
 We used the same collection of the BBC videos as a source for the test set collection. Collection of BBC consists of video keyframes, audio content, 3 sets of automatic speech recognition (ASR) transcripts: LIMSI/Vocapia \cite{gauvain2002limsi,lamel2012multilingual}, LIUM \cite{8307} , NST/Sheffield \cite{lanchantin2013automatic,hain2008automatic} furthermore 1 manual subtitles, metadata and prosodic features \cite{eyben2013recent}.
 
@@ -53,12 +53,12 @@ Our main goal was to create a concept enrichmented so called 'shot-document' fil
 
 \subsection{Concept enrichment}
 
-Our concept enrichment stage consists of three text transformation stages. First, each word in the shot-documents is analysed by the phpMorphy\footnote{http://sourceforge.net/projects/phpmorphy} morphology engine. This engine can create the normal form (stem) of each word using basic grammatical rules and a large dictionary. This engine also works with German and Russian besides English. In our work we replaced every word with its normal form. In this point the shot-document is only a bag of words.
+Our concept enrichment stage consists of three text transformation stages. First, each word in the shot-documents is analysed by the phpMorphy\footnote{http://sourceforge.net/projects/phpmorphy} morphology engine. This engine can create the normal form (stem) of each word using basic grammatical rules and a large dictionary. In our work we replaced every word with its stem by this engine. In this point the shot-document is only a bag of words.
 
 After this step we filtered out the stop words, we used 702 different English stop words\footnote{http://www.ranks.nl/stopwords} for that, including search term like words e.g.: less, important.
 This way we narrowed down the word list of a shot-document to its core concept.
 
-For a better match we needed to enrich this list with synonyms and conceptually connected other items. For this we used the well known ConceptNet 5\footnote{http://conceptnet5.media.mit.edu/} system, which can give us other words / phrases connected to each word in a shot-document. We experimented with a wider range solution: including 50 conceptually connected words for each word in the shot document and a smaller range solution: including only 10 connected word. In the results the (C2) notates the smaller range result. We introduced a weight for each word, the "original" words inside the shot-document's weight is 1, the weight of connected words are lower (for wide range: 0.2, for small range: 0.1). At aggregation all of the enriched words there can be duplicates (like 'home' is connected to 'school' and 'teacher' is connected to 'school'), we aggregate them by a simple weight sum. Using this method the weight represents the importance of a word in the conceptual graph (sum of all words in the shot-document).
+For a better match we needed to enrich this list with synonyms and conceptually connected other items. For this we used the well known ConceptNet 5\footnote{http://conceptnet5.media.mit.edu/} system, which can give us other words / phrases connected to each word in a shot-document. We experimented with a wider and a smaller range solution: including 50 and 10 conceptually connected words for each word, respectively. In the results the (C2) notates the smaller range result. We introduced a weight for each word, the "original" words inside the shot-document's weight is 1, the weight of connected words are lower (for wide range: 0.2, for small range: 0.1). At aggregation all of the enriched words there can be duplicates (like 'home' is connected to 'school' and 'teacher' is connected to 'school'), we aggregate them by a simple weight sum. Using this method the weight represents the importance of a word in the conceptual graph (sum of all words in the shot-document).
 
 \subsection{Content mixing}
 
@@ -66,17 +66,17 @@ We created multiple shot-document types (3 transcripts and manual subtitles), fu
 
 \subsection{Indexing and retrieval}
 
-For indexing each shot-document we used Apache Solr\footnote{http://lucene.apache.org/solr/} since it supports text indexing and retrieval with a lot of adjustable variables. Each shot-document is considered in Solr as a single continuous text stream, the order of the words represented the weight in the shot-document. Important note is that during the word reordering we kept concept phrases as one entity.
+For indexing and retrieval we used Apache Solr\footnote{http://lucene.apache.org/solr/}, and each shot-document is considered in Solr as a single continuous text stream, the order of the words represented the weight in the shot-document. Important note is that during the word reordering we kept concept phrases as one entity.
 
 In the search sub-task the we only included the following steps: stop word filtering for the query, creating the norm form for each word in the query, using the query as a search input in Solr. The result was limited to 30 retrieved items.
 
-In the linking sub-task we used the shot-document representing the needed section as a search query, but we removed the concept enriched words from it. So it was basically the core concept of the shot used as a simple text search input.
+In the linking sub-task we used the shot-document representing the needed section as a search query, but we removed the concept enriched words from it. %So it was basically the core concept of the shot used as a simple text search input.
 
 \section{Results and conclusions}
 
-The whole dataset was more than 3700 hours of video and the evaluation was on a shot level base (sometimes less than 5 seconds).
+The whole dataset was more than 3700 hours of video and the evaluation was on a shot level base (sometimes less than 5 seconds). Table 1 and 2 represent the search and linking sub-task results, respectively, where P@N are precision oriented metrics, such as precision at various cutoffs (adjusted for this task).\cite{metrics2012}
 
-\subsection{Searching sub-task}
+%\subsection{Searching sub-task}
 
 \begin{table}[h]
 \begin{tabular}{|c|c|c|c|}
@@ -84,35 +84,34 @@ The whole dataset was more than 3700 hours of video and the evaluation was on a 
 	& P@5 & P@10 & P@20\tabularnewline
 	\hline 
 	\hline 
-	Manual subtitles & .1778 & .2000 & .1407\tabularnewline
+	Manual subtitles & 0.1778 & 0.2000 & 0.1407\tabularnewline
 	\hline 
-	LIMSI transcripts & .1481 & .1667 & .1185\tabularnewline
+	LIMSI transcripts & 0.1481 & 0.1667 & 0.1185\tabularnewline
 	\hline 
-	LIUM transcripts & .1630 & .1444 & .1148\tabularnewline
+	LIUM transcripts & 0.1630 & 0.1444 & 0.1148\tabularnewline
 	\hline 
-	NST/Sheffield transcripts& .1769 & .1308 & .0981\tabularnewline
+	NST/Sheffield transcripts& 0.1769 & 0.1308 & 0.0981\tabularnewline
 	\hline 
-	All transcripts and subtitles & .1517 & .1345 & .1017\tabularnewline
+	All transcripts and subtitles & 0.1517 & 0.1345 & 0.1017\tabularnewline
 	\hline 
-	Manual subtitles (C2) & .3407 & .3074 & .2074\tabularnewline
+	Manual subtitles (C2) & 0.3407 & 0.3074 & 0.2074\tabularnewline
 	\hline 
-	LIMSI transcripts (C2) & .3111 & .2926 & .2204\tabularnewline
+	LIMSI transcripts (C2) & 0.3111 & 0.2926 & 0.2204\tabularnewline
 	\hline 
-	LIUM transcripts (C2) & .3704 & .2815 & .2204\tabularnewline
+	LIUM transcripts (C2) & 0.3704 & 0.2815 & 0.2204\tabularnewline
 	\hline 
-	NST/Sheffield transcripts (C2) & .2846 & .2231 & .1692\tabularnewline	
+	NST/Sheffield transcripts (C2) & 0.2846 & 0.2231 & 0.1692\tabularnewline	
 	\hline 
-	All transcripts and subtitles (C2) & .1655 & .1586 & .1190\tabularnewline	
+	All transcripts and subtitles (C2) & 0.1655 & 0.1586 & 0.1190\tabularnewline	
 	\hline 
 \end{tabular}
 \caption{P@N result for the searching sub-task}
 \end{table}
 
-In the search sub-task we reached a quite stable result for each subtitle / transcript. Using a manually written transcript is much better since it can include visual clues, non-spoken informations (e.g. texts) and it has lower error rate, on the other hand in the transcripts there can be 'misheard' sentences. 
+In the search sub-task we reached a quite stable result for each subtitle / transcript. Using a manually written transcript is much better since it can include visual clues, non-spoken informations (e.g. texts) and it has lower error rate, on the other hand in the transcripts there can be 'misheard' sentences.
+%Big surprise is the failure of context mixing method since it underperformed in almost all cases.
 
-The biggest surprise is the failure of our context mixing method since it underperformed in almost all cases.
-
-\subsection{Linking sub-task}
+%\subsection{Linking sub-task}
 
 \begin{table}[h]
 \begin{tabular}{|c|c|c|c|}
@@ -120,25 +119,25 @@ The biggest surprise is the failure of our context mixing method since it underp
 	& P@5 & P@10 & P@20\tabularnewline
 	\hline 
 	\hline 
-	Manual subtitles & .0750 & .0500 & .0312\tabularnewline
+	Manual subtitles & 0.0750 & 0.0500 & 0.0312\tabularnewline
 	\hline 
-	LIMSI transcripts & .0444 & .0333 & .0167\tabularnewline
+	LIMSI transcripts & 0.0444 & 0.0333 & 0.0167\tabularnewline
 	\hline 
-	LIUM transcripts & .0533 & .0400 & .0200\tabularnewline
+	LIUM transcripts & 0.0533 & 0.0400 & 0.0200\tabularnewline
 	\hline 
-	NST/Sheffield transcripts & .0400 & .0467 & .0233\tabularnewline
+	NST/Sheffield transcripts & 0.0400 & 0.0467 & 0.0233\tabularnewline
 	\hline 
-	All transcripts and subtitles & .0370 & .0407 & .0222\tabularnewline
+	All transcripts and subtitles & 0.0370 & 0.0407 & 0.0222\tabularnewline
 	\hline 
-	Manual subtitles (C2) & .1818 & .1000 & .0500\tabularnewline
+	Manual subtitles (C2) & 0.1818 & 0.1000 & 0.0500\tabularnewline
 	\hline 
-	LIMSI transcripts (C2) & .0500 & .0625 & .0375\tabularnewline
+	LIMSI transcripts (C2) & 0.0500 & 0.0625 & 0.0375\tabularnewline
 	\hline 
-	LIUM transcripts (C2) & .0526 & .0316 & .0184\tabularnewline
+	LIUM transcripts (C2) & 0.0526 & 0.0316 & 0.0184\tabularnewline
 	\hline 
-	NST/Sheffield transcripts (C2) & .0300 & .0350 & .0175\tabularnewline	
+	NST/Sheffield transcripts (C2) & 0.0300 & 0.0350 & 0.0175\tabularnewline	
 	\hline 
-	All transcripts and subtitles (C2) & .0143 & .0250 & .0196\tabularnewline	
+	All transcripts and subtitles (C2) & 0.0143 & 0.0250 & 0.0196\tabularnewline	
 	\hline 
 \end{tabular}
 \caption{P@N result for the linking sub-task}
@@ -146,12 +145,11 @@ The biggest surprise is the failure of our context mixing method since it underp
 
 In the linking sub-task the Manual subtitles gave us the best result, but it is interesting to note that for 2 of the anchors we cannot find any relevant items among all of our results, that is why the P@N results are so low. These anchors are \textit{anchor\_22} and \textit{anchor\_27}.
 
-
 \section{Acknowledgments}
 
 The publication was supported by the T\'AMOP-4.2.2.C-11/1/KONV-2012-0001 project. The project has been supported by the European Union, co-financed by the European Social Fund.
 
 \bibliographystyle{abbrv}
-\bibliography{sigproc}
+\normalsize{\bibliography{sigproc}}
 
 \end{document}
